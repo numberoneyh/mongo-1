@@ -1,11 +1,15 @@
-import jwt from 'jsonwebtoken'
 import Todo from '../models/Todo.js'
+import jwt from 'jsonwebtoken'
 
 class TodoService {
   async create(data, token) {
     const { id } = jwt.verify(token, process.env.SECRET_KEY)
     const { title, complete } = data
-    const todo = await new Todo({ title, complete: complete ? complete : false, author: id })
+    const todo = await new Todo({
+      title,
+      complete: complete ? complete : false,
+      author: id,
+    })
     await todo.save()
 
     return { message: 'задача успешно добавлен' }
@@ -80,22 +84,22 @@ class TodoService {
     if (page && limit) {
       page = page || 1
       limit = limit || 6
-      return await Todo.paginate({author: id}, { page, limit })
+      return await Todo.paginate({ author: id }, { page, limit })
     }
 
     if (!page && limit) {
       page = page || 1
       limit = limit || 6
-      return await Todo.paginate({author: id}, { page, limit })
+      return await Todo.paginate({ author: id }, { page, limit })
     }
 
     if (page && !limit) {
       page = page || 1
       limit = limit || 6
-      return await Todo.paginate({author: id}, { page, limit })
+      return await Todo.paginate({ author: id }, { page, limit })
     }
 
-    const todo = Todo.find({author: id})
+    const todo = await Todo.find({ author: id })
     return todo
   }
 }

@@ -1,30 +1,29 @@
-import { ApiError } from '../error/ApiError.js'
 import userService from '../service/user.service.js'
 
 class UserController {
-  async register(req, res, next) {
+  async register(req, res) {
     try {
       const response = await userService.register(req)
       res.json(response)
     } catch (e) {
-      next(res.json(ApiError.badRequest(e.message)))
+      res.status(400).json(e)
     }
   }
-  async login(req, res, next) {
+  async login(req, res) {
     try {
       const response = await userService.login(req.body)
       res.json(response)
     } catch (e) {
-      next(ApiError.badRequest(e.message))
+      res.status(400).json(e)
     }
   }
-  async authCheck(req, res, next) {
+  async authCheck(req, res) {
     try {
       const token = req.headers.authorization.split(' ')[1]
       const response = await userService.authCheck(token)
       return res.json(response)
     } catch (e) {
-      next(res.json(ApiError.badRequest(e.message)))
+      res.status(400).json(e)
     }
   }
 }
